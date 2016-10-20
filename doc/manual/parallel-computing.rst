@@ -89,11 +89,19 @@ but is more efficient.
 
 ::
 
-    julia> remotecall_fetch(getindex, 2, r, 1, 1)
+    julia> remotecall_fetch(r-> fetch(r)[1,1], 2, r)
     0.10824216411304866
 
+This fetches the array on worker 2 and returns the first value. Note, that `fetch` doesn't move any data in this case,
+since it's executed on the worker that owns the array.
+One can also write::
+
+    julia> remotecall_fetch(getindex, 2, r, 1, 1)
+    0.10824216411304866
+    
 Remember that :func:`getindex(r,1,1) <getindex>` is :ref:`equivalent <man-array-indexing>` to
 ``r[1,1]``, so this call fetches the first element of the future ``r``.
+
 
 The syntax of :func:`remotecall` is not especially convenient. The macro
 :obj:`@spawn` makes things easier. It operates on an expression rather than
